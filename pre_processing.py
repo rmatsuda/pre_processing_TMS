@@ -19,14 +19,14 @@ for i in range (0,len(a),3):
     # y_sd = np.append(y_sd,np.std(a[i:i+3,1]))
     # z = np.append(z,np.mean(a[i:i+3,2]))
     # z_sd = np.append(z_sd,np.std(a[i:i+3,2]))
-#plt.show()
+plt.show()
 f=0
 #a=np.insert(a[0,:],0)
 #w=np.append(a,np.linspace(1,len(a), len(a)), axis=1)
 b=np.linspace(1,len(a), len(a))
 b.reshape(60,1)
 # for i in range (0,len(a)+1):
-a[0]=np.append(a[0],0)
+#a[0]=np.append(a[0],0)
 print a
 
 
