@@ -3,7 +3,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
 #This function doesnt work with str, just numbers
-f = np.loadtxt("09_ADM_110.txt")
+f = np.loadtxt("09_ADM_120.txt")
 a = f[:,0:3]
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
