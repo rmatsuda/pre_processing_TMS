@@ -2,37 +2,51 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
-#This function doesnt work with str, just numbers
-f = np.loadtxt("09_ADM_120.txt")
-a = f[:,0:3]
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-#ax.scatter(a[:,0],a[:,1],a[:,2])
-color=cm.rainbow(np.linspace(0,1,len(a)))
-x=y=z=x_sd=y_sd=z_sd = []
-flag = []
-for i in range (0,len(a),3):
-    ax.scatter(a[i:i+3,0],a[i:i+3,1],a[i:i+3,2],c=color[i])
-    # x = np.append(x,np.mean(a[i:i+3,0]))
-    # x_sd = np.append(x_sd,np.std(a[i:i+3,0]))
-    # y = np.append(y,np.mean(a[i:i+3,1]))
-    # y_sd = np.append(y_sd,np.std(a[i:i+3,1]))
-    # z = np.append(z,np.mean(a[i:i+3,2]))
-    # z_sd = np.append(z_sd,np.std(a[i:i+3,2]))
-plt.show()
-f=0
-#a=np.insert(a[0,:],0)
-#w=np.append(a,np.linspace(1,len(a), len(a)), axis=1)
-b=np.linspace(1,len(a), len(a))
-b.reshape(60,1)
-# for i in range (0,len(a)+1):
-#a[0]=np.append(a[0],0)
-print a
+import matplotlib.colors as colors
 
+_SUBJECT = ["01", "02", "03", "04", "05", "08", "09", "10", "11", "12", "13"]
+_INTENSITY = ["110", "120"]
+_TYPE = ["MNI", "MRI"]
+_MUSCLES = ["ADM", "FCP", "FRC"]
+_BANDWIDTH = 7
+for i in _SUBJECT:
+    for j in _INTENSITY:
+        for o in _TYPE:
+            for l in _MUSCLES:
+                # try:
+                    print 'data/'+i+"_"+j+"_"+o+"_"+l+".txt"
+                    _PATH = 'data/'+i+"_"+j+"_"+o+"_"+l+".txt"
+                    #print _PATH
+                    f = np.loadtxt(_PATH, delimiter='\t', usecols=[0, 1, 2, 3])
+                    ID = np.loadtxt(_PATH, delimiter='\t', usecols=[7], dtype=str)
+                    if ID[0] != "":
+                        a = f[3:, :]
+                    else:
+                        a = f[:, :]
 
-# for i in range(0,len(a)):
-#     for j in range(0,len(a)):
-#         if i!=j:
-#             ed = np.sqrt((a[i,0] - a[j,0])**2 +(a[i,1] - a[j,1])**2 + (a[i,2] - a[j,2])**2)
+                    fig = plt.figure()
+                    ax = fig.add_subplot(111, projection='3d')
+                    #ax.scatter(a[:,0],a[:,1],a[:,2])
+                    a[:,3] = 0
+                    #create color scale
+                    color_norm = colors.Normalize(vmin=0, vmax=len(a) - 1)
+                    scalar_map = cm.ScalarMappable(norm=color_norm, cmap='hsv')
+                    print len(a)
+                    for t in range(0,len(a)):
+                        #calculate the Euclidian distance(ED) between all markers
+                        #if distance is under a upper, create an ID
+                        for u in range(0, len(a)):
+                            ED = np.sqrt((a[t,0]-a[u,0])**2+(a[t,1]-a[u,1])**2+(a[t,2]-a[u,2])**2)
+                            if ED <= _BANDWIDTH and a[u,3] == 0 :
+                                a[u,3] = t
+                        #set different colors
+                        col = scalar_map.to_rgba(a[t, 3])
+                        if (a[t,3] % 3) != 0 and  a[t,3]!= 1:
+                            ax.scatter(a[t,0],a[t,1],a[t,2],c=col, marker='x')
+                        else:
+                            ax.scatter(a[t,0], a[t,1], a[t,2], c=col)
 
-
+                    ax.legend((a[:,3]), fontsize = 'xx-small')
+                    plt.show()
+                # except:
+                #     print "There is no data for the subject "
